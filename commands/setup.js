@@ -1,4 +1,4 @@
-const {Client, GatewayIntentBits, InteractionType, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const {Client, GatewayIntentBits, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, PermissionsBitField } = require('discord.js');
 const Database = require('easy-json-database')
 const database = new Database("./global-db.json")
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -33,5 +33,10 @@ module.exports = {
       
     await interaction.reply({content: 'You\'ve already set the global chat channel, do you want to set up again?', ephemeral: false, components: [row]}) 
     }
+
+    interaction.guild.channels.create({
+    	name: 'global-chat-logs',
+    	type: ChannelType.GuildText,
+    })
   },
 }
