@@ -1,7 +1,8 @@
 const {Client, GatewayIntentBits, InteractionType, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const Database = require('easy-json-database')
-const database = new Database("./database.json")
+const database = new Database("./global-db.json")
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const config = require("../config.js")
 
 module.exports = {
   name: 'setup',
@@ -26,7 +27,10 @@ module.exports = {
 					.setStyle(ButtonStyle.Danger),
 			);
 
-    database.set(`${interaction.guild.id}-global2`, interaction.options.getChannel('channel').id)
+    const channelOverwrite = interaction.options.getChannel('channel').id;
+
+    config.channelOverwrite = channelOverwrite
+      
     await interaction.reply({content: 'You\'ve already set the global chat channel, do you want to set up again?', ephemeral: false, components: [row]}) 
     }
   },

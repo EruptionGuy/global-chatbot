@@ -1,10 +1,12 @@
 const {Client, Collection, GatewayIntentBits, InteractionType } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Database = require('easy-json-database')
-const database = new Database("./database.json")
+const database = new Database("./global-db.json")
 
 const keepAlive = require('./server.js');
+const config = require('./config.js')
 
 // Print errors in console
 let process = require('process');
@@ -22,7 +24,6 @@ client.on("ready", () => {
       type: "WATCHING"
     }]
   });
-  prefix = "%";
 })
 
 // Slash commands
@@ -82,12 +83,14 @@ client.on('interactionCreate', async (i) => {
         let interaction = i;
         if (!(i.isButton())) return;
         if (((i.customId)) == 'setupYes') {
+          const test = require("./commands/setup.js");
+          const channelOverwrite2 = config.channelOverwrite
+          console.log(channelOverwrite2);
           i.reply({
-            content: String('Succesfully overwrited the global chat channel! New channel id: `' + database.get(`${interaction.guild.id}-global2`) + '`'),
+            content: String(`Succesfully overwrited the global chat channel! New channel id: \`${channelOverwrite2}\``),
             ephemeral: false,
           });
-          database.set(`${interaction.guild.id}-global`, database.get(`${interaction.guild.id}-global2`)); 
-         // database.delete(`${interaction.guild.id}-global2`);
+         database.set(`${i.guild.id}-global`, channelOverwrite2); 
         }
 })
 
